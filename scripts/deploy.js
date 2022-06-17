@@ -28,3 +28,8 @@ main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });
+
+
+// To check that the contract is destroyed:
+var code = await web3.eth.getCode(contract address);
+console.log("Code:" , code);
