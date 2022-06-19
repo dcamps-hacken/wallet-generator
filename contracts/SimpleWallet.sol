@@ -1,0 +1,65 @@
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.7;
+
+error Wallet__Unauthorized();
+error Wallet__ClosedWallet();
+error Wallet__StatusNotPreDestroy();
+
+/** @title EVM wallet
+ *  @author David Camps Novi
+ *  @dev This contract has some common functions used in a wallet
+ */
+contract SimpleWallet {
+
+    address private immutable i_owner
+
+    event FundsReceived(address indexed sender, uint256 amount);
+    event FundsTransfer(address indexed recipient, uint256 amount);
+    event AllWithdraw(uint256 _amount);
+    event WalletDelete(address recipient, uint256 amount)
+
+    modifier onlyOwner {
+        if (msg.sender != i_owner) revert Wallet__Unauthorized();
+        _;
+    }
+
+    constructor() {
+        i_owner = msg.sender;
+        s_status = WalletStatus.OPEN;
+    }
+
+    receive() external payable { //msg.data is empty
+        if (s_status != WalletStatus.OPEN) revert Wallet__ClosedWallet();
+        emit FundsReceived(msg.sender, msg.value);
+    }
+
+    fallback() external payable { //msg.data is not empty
+        if (s_status != WalletStatus.OPEN) revert Wallet__ClosedWallet();
+        emit FundsReceived(msg.sender, msg.value);
+    }
+
+    /**
+     *  @notice This function transfers some funds from this wallet to another address.
+     */
+    function transferFunds(uint256 _amount, address _recipient) external onlyOwner {
+        payable(_recipient).transfer(_amount);
+        event FundsTransfer(_recipient, _amount)
+    }
+
+    /**
+     *  @notice This function withdraws the whole balance of this wallet to the address 
+     *  that deployed it.
+     */
+    function withdrawAll(uint256 _amount) external onlyOwner {
+        payable(msg.sender).transfer(address(this).balance());
+        emit AllWithdraw(_amount);
+    }
+
+    /**
+     *  @notice This function returns the address of your address.
+     */
+    function getBalance() external view returns (uint256) {
+        return (address(this).balance())
+    }
+
+}

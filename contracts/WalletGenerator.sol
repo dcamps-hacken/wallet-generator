@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.7;
 
-import "./Wallet.sol";
-import "./MultisigWallet.sol";
+import "./*Wallet.sol";
 
 /** @title EVM wallet generator
  *  @author David Camps Novi
@@ -15,19 +14,27 @@ contract WalletGenerator {
     /* Number of Wallets created by each User */
     mapping (address => uint256) s_numberOfWallets;
 
-    event WalletCreate(address indexed owner, address indexed walletAddress);
+    event WalletCreate(address indexed owner, address indexed walletAddress, string type);
 
     /**
      *  @notice This is the function that will deploy a new wallet every time it's called.
      *  @dev The wallet addresses and Ids are stored in mappings so that users can get
      *  their wallet addresses. 
      */
-    function createWallet(address _owner) external {
-        Wallet newWallet = new Wallet(_owner);
+    function createSimpleWallet() external {
+        SimpleWallet newWallet = new SimpleWallet(msg.sender);
         uint256 nextWalletId = s_numberOfWallets[msg.sender];
         s_wallets[msg.sender][nextWalletId] = newWallet.address();
         s_numberOfWallets[msg.sender] += 1;
-        emit WalletCreate(msg.sender, newWallet.address)
+        emit WalletCreate(msg.sender, newWallet.address, "SimpleWallet")
+    }
+
+    function createDestroyableWallet() external {
+        DestroyableWallet newWallet = new DestroyableWallet(msg.sender);
+        uint256 nextWalletId = s_numberOfWallets[msg.sender];
+        s_wallets[msg.sender][nextWalletId] = newWallet.address();
+        s_numberOfWallets[msg.sender] += 1;
+        emit WalletCreate(msg.sender, newWallet.address, "DestroyableWallet")
     }
 
     function createMultisigWallet(address[] memory _owners, _requiredConfirmations) external () {
@@ -35,7 +42,7 @@ contract WalletGenerator {
         uint256 nextWalletId = s_numberOfWallets[msg.sender];
         s_wallets[msg.sender][nextWalletId] = newWallet.address();
         s_numberOfWallets[msg.sender] += 1;
-        emit WalletCreate(msg.sender, newWallet.address)
+        emit WalletCreate(msg.sender, newWallet.address, "MultisigWallet")
     }
 
     /**

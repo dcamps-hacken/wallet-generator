@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.7;
 
-import "hardhat/console.sol";
-
 error Wallet__Unauthorized();
 error Wallet__ClosedWallet();
 error Wallet__StatusNotPreDestroy();
@@ -11,7 +9,7 @@ error Wallet__StatusNotPreDestroy();
  *  @author David Camps Novi
  *  @dev This contract has some common functions used in a wallet
  */
-contract Wallet {
+contract DestroyableWallet {
 
     enum WalletStatus{
         CLOSED,
@@ -38,19 +36,19 @@ contract Wallet {
         _;
     }
 
-    constructor(address _owner) {
-        i_owner = _owner;
+    constructor() {
+        i_owner = msg.sender;
         s_status = WalletStatus.OPEN;
     }
 
     receive() external payable { //msg.data is empty
         if (s_status != WalletStatus.OPEN) revert Wallet__ClosedWallet();
-        emit Recieved(msg.sender, msg.value);
+        emit FundsReceived(msg.sender, msg.value);
     }
 
     fallback() external payable { //msg.data is not empty
         if (s_status != WalletStatus.OPEN) revert Wallet__ClosedWallet();
-        emit Recieved(msg.sender, msg.value);
+        emit FundsReceived(msg.sender, msg.value);
     }
 
     /**
@@ -81,7 +79,7 @@ contract Wallet {
      *  of the wallet can be checked with the function getStatus().
      *  @param _recipient Is the address to which the funds of this wallet will be sent.
      */
-    function deleteWallet (address _recipient) onlyOwner walletOpen {
+    function destroyWallet (address _recipient) onlyOwner walletOpen {
         if (s_status != WalletStatus.PREDESTROY) revert Wallet__StatusNotPreDestroy();
         emit WalletDelete(_recipient, address(this).balance())
         selfdestruct(payable(_recipient));

@@ -15,12 +15,12 @@ contract MultisigWallet {
     }
 
     uint256 private nextTxId;
-    uint256 immutable private i_requiredConfirmations;
+    uint256 private requiredConfirmations;
     mapping(uint256 => Tx) private s_txs;
     mapping(address => bool) private s_owners;
     mapping(uint256 => mapping(address => bool)) s_approvals;
 
-    event Recieved(address indexed sender, uint256 amount);
+    event FundsReceived(address indexed sender, uint256 amount);
     event TxSubmit(uint256 txId, address requester);
     event TxApprove(uint256 txId, address approver);
     event TxSend(uint256 txId, address sender);
@@ -34,15 +34,15 @@ contract MultisigWallet {
         for (uint i; i < _owners.length(); i++){
             s_owners[_owners[i]] = true;
         }
-        i_requiredConfirmations = _requiredConfirmations;
+        requiredConfirmations = _requiredConfirmations;
     }
 
     receive() external payable { //msg.data is empty
-        emit Recieved(msg.sender, msg.value);
+        emit FundsReceived(msg.sender, msg.value);
     }
 
     fallback() external payable { //msg.data is not empty
-        emit Recieved(msg.sender, msg.value);
+        emit FundsReceived(msg.sender, msg.value);
     }
 
     function submitTx(
@@ -73,6 +73,18 @@ contract MultisigWallet {
         uint256 amount = s_txs[_txId].amount;
         recipient.transfer(amount);
         emit TxSend (_txId, msg.sender)
+    }
+
+    function addOwner(address _newOwner) external onlyOwners {
+        s_owners[_newOwner] = true;
+    }
+
+    function removeOwner(address _newOwner) external onlyOwners {
+        s_owners[_newOwner] = false;
+    }
+
+    function changeConfirmations(uint256 _newConfirmations) {
+        requiredConfirmations = _newConfirmations;
     }
 
     function getBalance() external view returns (uint256) {
