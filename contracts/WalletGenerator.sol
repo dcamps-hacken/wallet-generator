@@ -2,6 +2,7 @@
 pragma solidity ^0.8.7;
 
 import "./Wallet.sol";
+import "./MultisigWallet.sol";
 
 /** @title EVM wallet generator
  *  @author David Camps Novi
@@ -10,29 +11,50 @@ import "./Wallet.sol";
 contract WalletGenerator {
 
 
-    mapping (address => address) private s_wallets;
+    mapping (address => mapping(uint256 => address) private s_wallets;
+    /* Number of Wallets created by each User */
+    mapping (address => uint256) s_numberOfWallets;
 
     event WalletCreate(address indexed owner, address indexed walletAddress);
 
     /**
      *  @notice This is the function that will deploy a new wallet every time it's called.
-     *  @dev The wallet address is stored in a mapping so that every user can get it. Note 
-     *  that only the last created wallet address will remain in the mapping since it is 
-     *  overwritten every time.
-     *  @return It returns the address of the created address
+     *  @dev The wallet addresses and Ids are stored in mappings so that users can get
+     *  their wallet addresses. 
      */
-    function createWallet() external returns (address) {
-        Wallet newWallet = new Wallet(msg.sender);
-        s_wallets[msg.sender] = newWallet.address;
+    function createWallet(address _owner) external {
+        Wallet newWallet = new Wallet(_owner);
+        uint256 nextWalletId = s_numberOfWallets[msg.sender];
+        s_wallets[msg.sender][nextWalletId] = newWallet.address();
+        s_numberOfWallets[msg.sender] += 1;
         emit WalletCreate(msg.sender, newWallet.address)
-        return newWallet.address; //do I need this if there is an event?
+    }
+
+    function createMultisigWallet(address[] memory _owners, _requiredConfirmations) external () {
+        MultisigWallet newWallet = new MultisigWallet(_owners, _requiredConfirmations);
+        uint256 nextWalletId = s_numberOfWallets[msg.sender];
+        s_wallets[msg.sender][nextWalletId] = newWallet.address();
+        s_numberOfWallets[msg.sender] += 1;
+        emit WalletCreate(msg.sender, newWallet.address)
     }
 
     /**
      *  @notice Use this function to get the address of your last created wallet
      */
-    function getWallet() external view returns (address) {
-        return s_wallets[msg.sender];
+    function getLatestWallet() external view returns (address) {
+        uint256 latestId = s_numberOfWallets[msg.sender];
+        return s_wallets[msg.sender][latestId];
+    }
+
+    function getWalletFromId(uint256 _Id) external view returns (address) {
+        return s_wallets[msg.sender[_Id]];
+    }
+
+    function getAllWallets() external view returns (address[] memory addresses) {
+        for (uint256 i; i < s_numberOfWallets[msg.sender], i++) {
+            addresses.append(s_wallets[msg.sender][i]);
+        }
+        return addresses;
     }
 
 }
