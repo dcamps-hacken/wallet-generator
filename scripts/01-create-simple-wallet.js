@@ -1,0 +1,5 @@
+const { ethers } = require("ethers")
+const { user1 } = await getNamedAccounts()
+walletGenerator = await ethers.getContract("WalletGenerator")
+await walletGenerator.connect(user1).createSimpleWallet()
+console.log("success")

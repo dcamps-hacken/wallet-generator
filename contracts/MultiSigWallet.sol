@@ -6,7 +6,6 @@ error MultisigWallet__AlreadyApproved();
 error MultisigWallet_NotEnoughConfirmations();
 
 contract MultisigWallet {
-
     struct Tx {
         uint256 amount;
         address recipient;
@@ -31,26 +30,22 @@ contract MultisigWallet {
     }
 
     constructor(address[] memory _owners, uint256 _requiredConfirmations) {
-        for (uint i; i < _owners.length(); i++){
+        for (uint256 i; i < _owners.length; i++) {
             s_owners[_owners[i]] = true;
         }
         requiredConfirmations = _requiredConfirmations;
     }
 
-    receive() external payable { //msg.data is empty
+    receive() external payable {
         emit FundsReceived(msg.sender, msg.value);
     }
 
-    fallback() external payable { //msg.data is not empty
+    fallback() external payable {
         emit FundsReceived(msg.sender, msg.value);
     }
 
-    function submitTx(
-        uint256 _amount,
-        address _recipient,
-        bytes _data
-    ) external onlyOwners {
-        s_txs[nextTxId] = Transaction({
+    function submitTx(uint256 _amount, address _recipient) external onlyOwners {
+        s_txs[nextTxId] = Tx({
             amount: _amount,
             recipient: _recipient,
             confirmations: 1,
@@ -62,17 +57,19 @@ contract MultisigWallet {
     }
 
     function approveTx(uint256 _txId) external onlyOwners {
-        if(approvals[_txId][msg.sender] != false) revert MultisigWallet__AlreadyApproved();
+        if (s_approvals[_txId][msg.sender] != false)
+            revert MultisigWallet__AlreadyApproved();
         s_txs[_txId].confirmations += 1;
-        emit TxApprove (_txId, msg.sender);
+        emit TxApprove(_txId, msg.sender);
     }
 
-    function sendTx(uint256 _transactionId) external onlyOwners {
-        if (s_txs[_txId].confirmations < i_requiredConfirmations) revert MultisigWallet_NotEnoughConfirmations();
-        address payable recipient = s_txs[_txId].recipient;
+    function sendTx(uint256 _txId) external onlyOwners {
+        if (s_txs[_txId].confirmations < requiredConfirmations)
+            revert MultisigWallet_NotEnoughConfirmations();
+        address payable recipient = payable(s_txs[_txId].recipient);
         uint256 amount = s_txs[_txId].amount;
         recipient.transfer(amount);
-        emit TxSend (_txId, msg.sender)
+        emit TxSend(_txId, msg.sender);
     }
 
     function addOwner(address _newOwner) external onlyOwners {
@@ -83,11 +80,11 @@ contract MultisigWallet {
         s_owners[_newOwner] = false;
     }
 
-    function changeConfirmations(uint256 _newConfirmations) {
+    function changeConfirmations(uint256 _newConfirmations) external {
         requiredConfirmations = _newConfirmations;
     }
 
     function getBalance() external view returns (uint256) {
-        return (address(this).balance())
+        return (address(this).balance);
     }
 }
