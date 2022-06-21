@@ -10,9 +10,9 @@ import "./MultisigWallet.sol";
  *  @dev This contract uses a factory pattern to deploy a new wallet for each user
  */
 contract WalletGenerator {
-    mapping(address => mapping(uint256 => address)) private s_wallets;
+    mapping(address => mapping(uint256 => address)) public s_wallets;
     /* Number of Wallets created by each User */
-    mapping(address => uint256) s_numberOfWallets;
+    mapping(address => uint256) public s_numberOfWallets;
 
     event WalletCreate(
         address indexed owner,
@@ -59,7 +59,7 @@ contract WalletGenerator {
      *  @notice Use this function to get the address of your last created wallet
      */
     function getLatestWallet() external view returns (address) {
-        uint256 latestId = s_numberOfWallets[msg.sender];
+        uint256 latestId = s_numberOfWallets[msg.sender] - 1;
         return s_wallets[msg.sender][latestId];
     }
 

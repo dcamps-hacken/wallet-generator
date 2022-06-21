@@ -1,5 +1,18 @@
-const { ethers } = require("ethers")
-const { user1 } = await getNamedAccounts()
-walletGenerator = await ethers.getContract("WalletGenerator")
-await walletGenerator.connect(user1).createSimpleWallet()
-console.log("success")
+const { deployments, ethers, getNamedAccounts } = require("hardhat")
+
+async function main() {
+    const { deployer, user1, user2 } = await getNamedAccounts()
+
+    await deployments.fixture(["all"])
+    walletGenerator = await ethers.getContract("WalletGenerator")
+
+    wallet = walletGenerator.connect(user1)
+    await wallet.createSimpleWallet()
+}
+
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })

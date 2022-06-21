@@ -1,11 +1,18 @@
-const { ethers } = require("ethers")
+const { deployments, ethers, getNamedAccounts } = require("hardhat")
 
-module.exports = async ({ deployments, getNamedAccounts }) => {
-    const { deploy, log } = deployments
-    const { user1 } = await getNamedAccounts()
+async function main() {
+    const { deployer, user1, user2 } = await getNamedAccounts()
 
+    await deployments.fixture(["all"])
     walletGenerator = await ethers.getContract("WalletGenerator")
 
     const newWallet = await walletGenerator.connect(user1).getLatestWallet()
     console.log(newWallet)
 }
+
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error)
+        process.exit(1)
+    })
