@@ -1,14 +1,12 @@
 # WALLET GENERATOR
 
-⏳ This project is under construction ⏳
+> ⏳⚠️ This project is currently under construction ⚠️⏳
 
 This wallet generator allows any user to deploy Simple or Multisig wallets for EVM-compatible blockchains.
 
 ### QUICKSTART 🚀
 
-´´´
-git clone https://github.com/fields93/wallet-generator.git
-´´´
+`git clone https://github.com/fields93/wallet-generator.git`
 
 ### TYPES OF WALLETS
 
