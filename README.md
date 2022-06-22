@@ -2,21 +2,17 @@
 
 > ⏳⚠️ This project is currently under construction ⚠️⏳
 
-This <em>Wallet Generator</em> allows any user to deploy Simple, Destroyable or Multisig wallets on EVM-compatible blockchains.
+This **Wallet Generator** allows any user to deploy Simple, Destroyable or Multisig wallets on EVM-compatible blockchains.
 
-#2# QUICKSTART 🚀
+## QUICKSTART 🚀
 
 ```git
 git clone https://github.com/fields93/wallet-generator.git
 ```
 
-<br>
-
 ## TYPES OF WALLETS
 
-The <em>Wallet Generator</em> contract comes with 3 main functions:
-
-<br>
+The **Wallet Generator** contract comes with 3 main functions:
 
 ### 🥇 Simple Wallet
 
@@ -26,8 +22,6 @@ Since it has no arguments you don't need to input anything. A message will pop o
 
 This wallet allows you to receive or transfer funds, get your balance or withdraw all your money.
 
-<br>
-
 ### 🥈 Destroyable Wallet
 
 Use `createDestroyableWallet()` to generate a Simple Wallet that can also be destroyed at any point.
@@ -35,8 +29,6 @@ Use `createDestroyableWallet()` to generate a Simple Wallet that can also be des
 In order to add an extra layer of security, the destroy functionality is a two-step process. Therefore, you will first need to call the function `preDestroy()`, that will change the status of the wallet to `PREDESTROY`, and later use the function `destroyWallet()`.
 
 Once the wallet is destroyed, all its funds will be sent to the address you provided.
-
-<br>
 
 ### 🥉 Multi-Signature Wallet
 
@@ -48,11 +40,9 @@ In order to call this function, some arguments must be provided:
 
 -   `_requiredConfirmations` is the number of times you want a transaction to be approved before it can be executed.
 
-<br>
-
 ### HOW TO GET THE ADDRESS OF YOUR WALLET
 
-Three functions have been added in the <em>Wallet Generator</em> contract with the purpose of getting the address of any wallet you created.
+Three functions have been added in the **Wallet Generator** contract with the purpose of getting the address of any wallet you created.
 
 Use `getLatestWallet()` if you just want to get the address of the wallet you just generated.
 
