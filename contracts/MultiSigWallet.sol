@@ -29,7 +29,7 @@ contract MultisigWallet {
         _;
     }
 
-    constructor(address[] memory _owners, uint256 _requiredConfirmations) {
+    constructor(address[3] memory _owners, uint256 _requiredConfirmations) {
         for (uint256 i; i < _owners.length; i++) {
             s_owners[_owners[i]] = true;
         }

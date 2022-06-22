@@ -42,7 +42,7 @@ contract WalletGenerator {
     }
 
     function createMultisigWallet(
-        address[] memory _owners,
+        address[3] memory _owners,
         uint256 _requiredConfirmations
     ) external {
         MultisigWallet newWallet = new MultisigWallet(
@@ -60,7 +60,7 @@ contract WalletGenerator {
      */
     function getLatestWallet() external view returns (address) {
         uint256 latestId = s_numberOfWallets[msg.sender] - 1;
-        return s_wallets[msg.sender][latestId];
+        return (s_wallets[msg.sender][latestId]);
     }
 
     function getWalletFromId(uint256 _Id) external view returns (address) {

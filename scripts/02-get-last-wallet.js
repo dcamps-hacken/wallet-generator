@@ -6,8 +6,8 @@ async function main() {
     await deployments.fixture(["all"])
     walletGenerator = await ethers.getContract("WalletGenerator")
 
-    const newWallet = await walletGenerator.connect(user1).getLatestWallet()
-    console.log(newWallet)
+    newWallet = await walletGenerator.getLatestWallet()
+    console.log(newWallet.address)
 }
 
 main()
