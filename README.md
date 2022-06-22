@@ -1,21 +1,14 @@
 # WALLET GENERATOR
 
+⏳ This project is under construction ⏳
+
 This wallet generator allows any user to deploy Simple or Multisig wallets for EVM-compatible blockchains.
 
-### HOW IT WORKS
+### QUICKSTART 🚀
 
-In order to create your wallet you will interact with the smart contract called "WalletGenerator". This contract is deployed on different blockchains so that you can chose where to create your wallet.
-
-Note that you will also require Metamask or another wallet in order to interact with the contract. If you don't have any, you can create one following [these instructions --> ADD LINK].
-
-Head to the corresponding block explorer to interact with the "WalletGenerator":
-
--   Ethereum's Rinkeby testnet
--   Polygon's Mumbai testnet
--   Gnosis Chain
--   ZkSync
-
-<br>
+´´´
+git clone https://github.com/fields93/wallet-generator.git
+´´´
 
 ### TYPES OF WALLETS
 

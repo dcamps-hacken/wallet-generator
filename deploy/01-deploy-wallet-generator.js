@@ -9,9 +9,9 @@ module.exports = async ({ deployments, getNamedAccounts }) => {
         from: deployer,
         args: args,
         log: true,
-        //waitConfirmations: 5,
+        waitConfirmations: 5,
     })
 
-    //await verify(walletGenerator.address)
+    await verify(walletGenerator.address)
 }
 module.exports.tags = ["all"]
