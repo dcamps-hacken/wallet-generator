@@ -66,12 +66,4 @@ contract WalletGenerator {
     function getWalletFromId(uint256 _Id) external view returns (address) {
         return s_wallets[msg.sender][_Id];
     }
-
-    function getAllWallets() external view returns (address[] memory) {
-        address[] memory addresses;
-        for (uint256 i; i < s_numberOfWallets[msg.sender]; i++) {
-            addresses[i] = s_wallets[msg.sender][i];
-        }
-        return addresses;
-    }
 }
